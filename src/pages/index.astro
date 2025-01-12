@@ -1,0 +1,378 @@
+---
+import { Image, imageConfig } from "astro:assets";
+import IndexLayout from "../layouts/IndexLayout.astro";
+import { marked } from "marked";
+import { WORDPRESS_URL } from "astro:env/server";
+const imageFetch = async (id) => {
+  return (
+    await (
+      await fetch(`http://astropress-copy.local/wp-json/wp/v2/media/${id}`)
+    ).json()
+  ).source_url;
+};
+const res = await fetch(WORDPRESS_URL + "inicio");
+const data = await res.json();
+const dataInicio = data[0].acf;
+const h1Data = marked.parse(dataInicio.h1);
+const logos = [];
+console.log(dataInicio);
+for (const key in dataInicio.logos) {
+  logos.push(await imageFetch(dataInicio.logos[key]));
+}
+const image2 = await imageFetch(dataInicio.ibero_image_2);
+const fondoInicio = await imageFetch(dataInicio.fondo_inicio);
+const text2Image = await imageFetch(dataInicio.ibero_text_2_image);
+---
+
+<IndexLayout title="ibero transport - inicio">
+  <div class="w-full h-svh relative flex flex-col justify-center top-0 z-0">
+    <div class="absolute w-svh h-svh bg-black z-20"></div>
+    <div class="absolute top-0 left-0 w-full h-full bg-black z-20 opacity-25">
+    </div>
+    <video
+      autoplay
+      muted
+      preload="metadata"
+      loop
+      class="absolute object-cover w-full h-full z-10"
+      src={fondoInicio}></video>
+    <h1
+      set:html={h1Data}
+      class="z-40 text-white font-primary relative text-5xl ml-5 lg:ml-14"
+    />
+    <div
+      class="w-fit h-fit flex bg-primary-claro ml-5 mt-5 lg:ml-14 rounded-lg text-white z-40 py-2 px-4 text-3xl cursor-pointer font-primary font-bold"
+    >
+      <a href="" class="leading-none">Cotiza con nosotros</a>
+    </div>
+    <svg
+      width="557"
+      height="374"
+      class="absolute right-0 z-30 bottom-0 max-sm:w-72 max-sm:h-auto"
+      viewBox="0 0 557 374"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="181"
+        y="436.111"
+        width="624"
+        height="183.803"
+        transform="rotate(-35.472 181 436.111)"
+        fill="#40B3B9"></rect>
+      <path
+        d="M444.246 97.1994L516.035 197.955L103.124 492.155L31.3354 391.4L444.246 97.1994Z"
+        fill="#042279"></path>
+      <path
+        d="M554.627 94.0654L522.29 258.925L388.246 70.7937L554.627 94.0654Z"
+        fill="#042279"></path>
+    </svg>
+  </div>
+
+  <div
+    class="w-full h-fit bg-primary relative p-14 py-20 flex flex-col items-center gap-10 lg:flex-row"
+  >
+    <Image src={image2} alt="" inferSize class="w-fit lg:w-[500px]" />
+    <p class="text-white font-primary text-2xl lg:text-3xl font-semibold">
+      {dataInicio.ibero_text_1}
+    </p>
+  </div>
+  <div
+    class="w-full h-fit antialiased text-center overflow-hidden flex flex-col justify-center relative gap-16 py-16 pb-20"
+  >
+    <p class="subtitulo">
+      {dataInicio.titulo_logos}
+    </p>
+    <div
+      x-data="{}"
+      x-init="$nextTick(() => {
+        let ul = $refs.logos;
+        ul.insertAdjacentHTML('afterend', ul.outerHTML);
+        ul.nextSibling.setAttribute('aria-hidden', 'true');
+    })"
+      class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
+    >
+      <ul
+        x-ref="logos"
+        class="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll"
+      >
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[0]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[1]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[2]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[3]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[4]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[5]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[6]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[7]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[8]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[9]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[10]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[11]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[12]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+      </ul>
+      <ul
+        x-ref="logos"
+        class="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll"
+        aria-hidden="true"
+      >
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[0]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[1]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[2]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[3]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[4]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[5]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[6]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[7]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[8]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[9]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[10]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[11]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+        <li>
+          <Image
+            class="h-14 w-auto"
+            loading="lazy"
+            src={`${logos[12]}`}
+            inferSize
+            alt=""
+          />
+        </li>
+      </ul>
+    </div>
+    <!-- End: Logo Carousel animation -->
+  </div>
+  <div
+    class="w-full h-fit flex flex-col relative z-20 items-center bg-center bg-cover gap-6 p-6 bg-map mb-5"
+  >
+    <p class="subtitulo z-20">
+      {dataInicio.ibero_text_2_titulo}
+    </p>
+    <div class="flex flex-col gap-6 items-center lg:flex-row lg:gap-14">
+      <Image
+        transition:name="matpel"
+        src={text2Image}
+        alt=""
+        inferSize
+        loading="lazy"
+        class="rounded-2xl rounded-bl-none"
+      />
+      <div class="flex flex-col">
+        <p class="font-primary text-2xl">{dataInicio.ibero_text_2}</p>
+        <div
+          class="flex flex-row justify-start gap-8 lg:text-2xl lg:gap-10 lg:font-semibold my-5 text-xl text-white"
+        >
+          <a
+            class="bg-primary-claro p-2 px-2 lg:px-10 text-nowrap rounded-lg cursor-pointer"
+          >
+            Cotiza ahora
+          </a>
+          <a
+            href="/servicios"
+            class="bg-primary-claro p-2 px-2 lg:px-10 text-nowrap rounded-lg cursor-pointer"
+          >
+            Ver mas servicios
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</IndexLayout>

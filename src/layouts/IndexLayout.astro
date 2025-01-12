@@ -1,0 +1,23 @@
+---
+const { title, logo } = Astro.props;
+import { ClientRouter } from "astro:transitions";
+import Navbar from "../components/Navbar.astro";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://fonts.cdnfonts.com/css/pf-handbook-pro"
+      rel="stylesheet"
+    />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title title={title}></title>
+    <ClientRouter />
+  </head>
+  <body class="relative">
+    <Navbar logo={logo} />
+    <slot />
+  </body>
+</html>
