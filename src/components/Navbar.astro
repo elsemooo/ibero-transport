@@ -8,7 +8,12 @@ import logo from "./../../public/logo.png";
     class="relative mx-auto flex flex-col py-4 justify-between lg:flex-row lg:items-center lg:justify-around"
   >
     <Image src={logo} class="w-48" alt="logo" loading="eager" />
-    <input class="peer hidden" type="checkbox" id="navbar-open" />
+    <input
+      type="checkbox"
+      id="navbar-open"
+      class="hidden peer"
+      aria-hidden="true"
+    />
     <label
       class="absolute right-0 top-2 cursor-pointer lg:hidden"
       for="navbar-open"
@@ -40,16 +45,13 @@ import logo from "./../../public/logo.png";
           <a class="" href="/servicios">Servicios</a>
         </li>
         <li class="">
-          <a class="" href="#">Clientes</a>
+          <a class="" href="/sobre-nosotros">Sobre nosotros</a>
         </li>
         <li class="">
-          <a class="" href="#">Sobre nosotros</a>
+          <a class="" href="/flota">Flota</a>
         </li>
         <li class="">
-          <a class="" href="#">Flota</a>
-        </li>
-        <li class="">
-          <a class="" href="#">Contacto</a>
+          <a class="" href="/contacto">Contacto</a>
         </li>
       </ul>
     </nav>

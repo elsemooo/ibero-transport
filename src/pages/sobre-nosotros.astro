@@ -1,0 +1,71 @@
+---
+import { WORDPRESS_URL_MEDIA } from "astro:env/server";
+import { Image } from "astro:assets";
+import IndexLayout from "../layouts/IndexLayout.astro";
+import { WORDPRESS_URL } from "astro:env/server";
+const imageFetch = async (id) => {
+  return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
+};
+const res = await fetch(WORDPRESS_URL + "sobre-nosotros");
+const data = await res.json();
+const dataSobreNosotros = data[0].acf;
+let fondoImg = await imageFetch(dataSobreNosotros.fondo_img);
+let titulo = dataSobreNosotros.titulo;
+let subtitulo = dataSobreNosotros.sub_titulo;
+---
+
+<IndexLayout
+  ><div
+    class="w-full h-fit bg-center flex flex-col relative bg-cover"
+    style=`background-image: url('${fondoImg}')`
+  >
+    <div class="absolute top-0 left-0 w-full h-full bg-black z-20 opacity-40">
+    </div>
+    <div class="text-white z-40">
+      <div class="mx-10 mt-10">
+        <h1 class="text-5xl">{titulo}</h1>
+        <p class="text-xl">{subtitulo}</p>
+      </div>
+      <div class="flex text-center flex-row justify-center gap-1 mt-5 self-end">
+        <div
+          class="w-2/6 h-fit py-2 text-2xl leading-none gap-2 bg-primary-claro flex flex-col items-center"
+        >
+          <img src="vision.svg" class="h-10" alt="" />
+          <p>Valores corporativos</p>
+        </div>
+        <input
+          type="checkbox"
+          id="mision"
+          class="hidden peer"
+          aria-hidden="true"
+        />
+        <label
+          class="w-2/6 cursor-pointer h-fit py-2 text-2xl leading-none gap-2 bg-primary-claro flex flex-col items-center relative"
+          for="mision"
+        >
+          <div
+            class="absolute top w-0 h-0 top-full
+        border-l-[15px] border-l-transparent
+        border-t-[15px] border-t-primary-claro
+        border-r-[15px] border-r-transparent"
+          >
+          </div>
+
+          <img src="vision.svg" class="h-10" alt="" />
+          <p><br class="sm:hidden" />Mision</p>
+        </label>
+        <div
+          class="w-2/6 h-fit py-2 text-2xl leading-none gap-2 bg-primary-claro flex flex-col items-center"
+        >
+          <img src="vision.svg" class="h-10" alt="" />
+          <p><br class="sm:hidden" />Vision</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-map px-10 pt-4 pb-10">
+    <div class="flex flex-col">
+      <div class="h-full w-fit rounded-lg"></div>
+    </div>
+  </div>
+</IndexLayout>

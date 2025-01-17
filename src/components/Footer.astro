@@ -1,3 +1,99 @@
-<div class="flex-row">
-  <div></div>
+---
+import Image from "astro/components/Image.astro";
+import { WORDPRESS_URL, WORDPRESS_URL_MEDIA } from "astro:env/server";
+const imageFetch = async (id) => {
+  return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
+};
+const res = await fetch(WORDPRESS_URL + "footer");
+const data = await res.json();
+const dataFooter = data[0].acf;
+const { redes } = dataFooter;
+const { red_social_1, red_social_2, red_social_3, red_social_4 } = redes;
+const red1Img = await imageFetch(red_social_1.logo);
+const red2Img = await imageFetch(red_social_2.logo);
+const red3Img = await imageFetch(red_social_3.logo);
+const red4Img = await imageFetch(red_social_4.logo);
+const resServicios = await fetch(WORDPRESS_URL + "servicios");
+const dataServiciosres = await resServicios.json();
+const dataServicios = dataServiciosres[0].acf;
+const servicios = [];
+for (const key in dataServicios.servicios) {
+  servicios.push(dataServicios.servicios[key]);
+}
+const brochure = await imageFetch(dataFooter.brochure);
+---
+
+<div
+  class="flex items-start w-full h-fit bg-[#1E1E1E] text-white font-primary p-10 flex-row flex-wrap justify-start gap-10 lg:justify-around"
+>
+  <div class="flex flex-col">
+    <p class="text-3xl">Enlaces Utiles</p>
+    <ul class="list-disc list-inside text-xl">
+      <li><a href="/">Inicio</a></li>
+      <li>
+        <a href="/servicios">Servicios</a>
+      </li>
+      <li><a href="">Clientes</a></li>
+      <li><a href="">Sobre Nosotros</a></li>
+      <li><a href="">Flota</a></li>
+      <li><a href="">Contacto</a></li>
+      <li><a href="">Políticas de privacidad</a></li>
+    </ul>
+    <div class="flex flex-row items-center gap-4 my-5">
+      <a class="pointer" href={red_social_1.url}
+        ><Image src={red1Img} alt="" inferSize /></a
+      >
+      <a class="pointer" href={red_social_2.url}
+        ><Image src={red2Img} alt="" inferSize /></a
+      >
+      <a class="pointer" href={red_social_3.url}
+        ><Image src={red3Img} alt="" inferSize /></a
+      >
+      <a class="pointer" href={red_social_4.url}
+        ><Image src={red4Img} alt="" inferSize /></a
+      >
+    </div>
+  </div>
+  <div class="flex flex-col">
+    <p class="text-3xl">Servicios</p>
+    <ul class="list-disc list-inside text-xl">
+      {
+        servicios.map((servicio) => {
+          return (
+            <li>
+              <a href={`/servicios/${servicio.slug}`}>
+                {String(servicio.titulo).toLowerCase()}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <a
+      href={brochure}
+      class="bg-[#BABABA] text-center w-fit text-black text-2xl font-medium py-1 px-6 rounded-lg my-5 cursor-pointer"
+      download
+      target="_blank">DESCARGAR BROCHURE</a
+    >
+  </div>
+  <iframe
+    |
+    class="self-center sm:max-w-[400px] w-auto my-5 sm:self-auto h-[300px]"
+    src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D100084851738471&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
+    width="320"
+    style="border:none;overflow:hidden"
+    scrolling="no"
+    frameborder="0"
+    allowfullscreen="true"
+    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+  ></iframe>
+  <iframe
+    class="self-center max-w-[500px] w-auto my-5 sm:self-auto h-[300px] lg:w-full"
+    frameborder="0"
+    scrolling="no"
+    marginheight="0"
+    marginwidth="0"
+    id="gmap_canvas"
+    src="https://maps.google.com/maps?width=520&height=400&hl=en&q=JCVC+4MF,%20Via%20de%20Evitamiento,%20Cerro%20Colorado%2004017%20+()&t=&z=12&ie=UTF8&iwloc=B&output=embed"
+  ></iframe>
 </div>

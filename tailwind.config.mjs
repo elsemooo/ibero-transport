@@ -31,6 +31,7 @@ export default {
       },
       animation: {
         "infinite-scroll": "infinite-scroll 25s linear infinite",
+        "loop-scroll": "infinite-scroll 50s linear infinite",
       },
       keyframes: {
         "infinite-scroll": {

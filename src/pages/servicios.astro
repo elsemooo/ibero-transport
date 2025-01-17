@@ -3,22 +3,17 @@ import { marked } from "marked";
 import IndexLayout from "../layouts/IndexLayout.astro";
 import ServicioCard from "../components/ServicioCard.astro";
 import { WORDPRESS_URL } from "astro:env/server";
+import { WORDPRESS_URL_MEDIA } from "astro:env/server";
 const imageFetch = async (id) => {
-  return (
-    await (
-      await fetch(`http://astropress-copy.local/wp-json/wp/v2/media/${id}`)
-    ).json()
-  ).source_url;
+  return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
 };
 const res = await fetch(WORDPRESS_URL + "servicios");
 const data = await res.json();
 const dataServicios = data[0].acf;
-console.log(dataServicios);
 const h1 = marked.parse(dataServicios.titulo_servicios);
 const h2 = marked.parse(dataServicios.sub_titulo_servicios);
 const servicios = [];
 for (const key in dataServicios.servicios) {
-  /* console.log(dataServicios.servicios[key]); */
   servicios.push(dataServicios.servicios[key]);
 }
 

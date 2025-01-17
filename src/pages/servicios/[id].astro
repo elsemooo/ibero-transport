@@ -1,0 +1,121 @@
+---
+import type { GetStaticPaths } from "astro";
+import IndexLayout from "../../layouts/IndexLayout.astro";
+import { WORDPRESS_URL, WORDPRESS_URL_MEDIA } from "astro:env/server";
+import Image from "astro/components/Image.astro";
+
+const imageFetch = async (id) => {
+  return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
+};
+export const getStaticPaths = (async () => {
+  const res = await fetch(WORDPRESS_URL + "servicios");
+  const data = await res.json();
+  const dataServicios = Object.values(data[0].acf.servicios);
+  return dataServicios.map((servicio) => ({
+    //@ts-ignore
+    params: { id: servicio.slug },
+    props: { servicio },
+  }));
+}) satisfies GetStaticPaths;
+
+const { servicio } = Astro.props;
+console.log(
+  "%csrc/pages/servicios/[id].astro:23 servicio",
+  "color: #007acc;",
+  servicio
+);
+//@ts-ignore
+let { titulo, img, text, galeria, slug } = servicio;
+let { img_1, img_2, img_3, img_4, img_5, img_6 } = galeria;
+
+img_1 = await imageFetch(img_1);
+img_2 = await imageFetch(img_2);
+img_3 = await imageFetch(img_3);
+img_4 = await imageFetch(img_4);
+img_5 = await imageFetch(img_5);
+img_6 = await imageFetch(img_6);
+
+img = await imageFetch(img);
+---
+
+<IndexLayout>
+  <div class="flex flex-col p-10">
+    <h1
+      class="text-3xl font-bold text-white w-fit px-10 text-center leading-none bg-primary-claro py-2 font-primary mb-10 shadow-lg"
+    >
+      {titulo}
+    </h1>
+    <div>
+      <div
+        class="flex flex-col-reverse gap-5 lg:flex-row lg:items-center lg:gap-10"
+      >
+        <div>
+          <p class="text-2xl lg:text-3xl mb-5">
+            {text}
+          </p>
+          <a
+            href="/"
+            class="py-2 px-7 rounded-lg bg-primary text-white font-semibold text-2xl"
+            >Cotiza ahora</a
+          >
+        </div>
+        <Image
+          src={img}
+          transition:name={`img-${slug}`}
+          alt=""
+          inferSize
+          loading="eager"
+          class="rounded-2xl rounded-bl-none lg:w-1/2 shadow-xl"
+        />
+      </div>
+    </div>
+    <div class="inline-flex flex-nowrap overflow-hidden mb-10 mt-20">
+      <ul
+        x-ref="logos"
+        class="flex items-center justify-center md:justify-start [&_img]:h-56 [&_img]:w-auto md:[&_img]:h-80 lg:[&_img]:h-auto [&_img]:max-w-none animate-loop-scroll"
+      >
+        <li>
+          <Image loading="eager" src={img_1} inferSize alt="" />
+        </li>
+        <li>
+          <Image loading="eager" src={img_2} inferSize alt="" />
+        </li>
+        <li>
+          <Image loading="eager" src={img_3} inferSize alt="" />
+        </li>
+        <li>
+          <Image loading="eager" src={img_4} inferSize alt="" />
+        </li>
+        <li>
+          <Image loading="eager" src={img_5} inferSize alt="" />
+        </li>
+        <li>
+          <Image loading="eager" src={img_6} inferSize alt="" />
+        </li>
+      </ul>
+      <ul
+        x-ref="logos"
+        class="flex items-center justify-center md:justify-start [&_img]:h-56 md:[&_img]:h-80 [&_img]:w-auto lg:[&_img]:h-auto [&_img]:max-w-none animate-loop-scroll"
+      >
+        <li>
+          <Image loading="eager" src={img_1} inferSize alt="" />
+        </li>
+        <li>
+          <Image loading="eager" src={img_2} inferSize alt="" />
+        </li>
+        <li>
+          <Image loading="eager" src={img_3} inferSize alt="" />
+        </li>
+        <li>
+          <Image loading="eager" src={img_4} inferSize alt="" />
+        </li>
+        <li>
+          <Image loading="eager" src={img_5} inferSize alt="" />
+        </li>
+        <li>
+          <Image loading="eager" src={img_6} inferSize alt="" />
+        </li>
+      </ul>
+    </div>
+  </div>
+</IndexLayout>

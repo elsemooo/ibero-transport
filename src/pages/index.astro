@@ -1,21 +1,17 @@
 ---
-import { Image, imageConfig } from "astro:assets";
+import { Image } from "astro:assets";
 import IndexLayout from "../layouts/IndexLayout.astro";
 import { marked } from "marked";
 import { WORDPRESS_URL } from "astro:env/server";
+import { WORDPRESS_URL_MEDIA } from "astro:env/server";
 const imageFetch = async (id) => {
-  return (
-    await (
-      await fetch(`http://astropress-copy.local/wp-json/wp/v2/media/${id}`)
-    ).json()
-  ).source_url;
+  return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
 };
 const res = await fetch(WORDPRESS_URL + "inicio");
 const data = await res.json();
 const dataInicio = data[0].acf;
 const h1Data = marked.parse(dataInicio.h1);
 const logos = [];
-console.log(dataInicio);
 for (const key in dataInicio.logos) {
   logos.push(await imageFetch(dataInicio.logos[key]));
 }

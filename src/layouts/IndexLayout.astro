@@ -2,6 +2,8 @@
 const { title, logo } = Astro.props;
 import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
 ---
 
 <html lang="es">
@@ -16,8 +18,9 @@ import Navbar from "../components/Navbar.astro";
     <title title={title}></title>
     <ClientRouter />
   </head>
-  <body class="relative">
+  <body class="relative *:font-primary">
     <Navbar logo={logo} />
     <slot />
+    <Footer />
   </body>
 </html>

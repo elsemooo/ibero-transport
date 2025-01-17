@@ -1,15 +1,12 @@
 ---
 import { Image } from "astro:assets";
+import { WORDPRESS_URL_MEDIA } from "astro:env/server";
 
 const { data } = Astro.props;
-let { titulo, img, text, galeria } = data;
+let { titulo, img, text, galeria, slug } = data;
 
 const imageFetch = async (id) => {
-  return (
-    await (
-      await fetch(`http://astropress-copy.local/wp-json/wp/v2/media/${id}`)
-    ).json()
-  ).source_url;
+  return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
 };
 img = await imageFetch(img);
 ---
@@ -20,15 +17,20 @@ img = await imageFetch(img);
   <Image
     src={img}
     alt=""
+    transition:name={`img-${slug}`}
     inferSize
     loading="eager"
     class="rounded-2xl rounded-bl-none w-full h-auto"
   />
-  <div class="p-4 text-3xl text-center flex flex-col h-full items-center">
-    <p class="h-full flex items-start justify-center px-10">{titulo}</p>
+  <div
+    class="p-4 text-3xl text-center font-primary flex flex-col h-full items-center"
+  >
+    <p class="h-full flex items-start justify-center px-10">
+      {titulo}
+    </p>
     <a
-      href=""
-      class="bg-primary text-white mx-3 p-1 rounded-lg max-w-72 w-3/4 mb-2"
+      href=`/servicios/${slug}`
+      class="bg-primary text-white mx-3 p-1 font-primary rounded-lg max-w-72 w-3/4 mb-2"
     >
       Conocer
     </a>
