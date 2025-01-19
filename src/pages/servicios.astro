@@ -2,8 +2,8 @@
 import { marked } from "marked";
 import IndexLayout from "../layouts/IndexLayout.astro";
 import ServicioCard from "../components/ServicioCard.astro";
-import { WORDPRESS_URL } from "astro:env/server";
-import { WORDPRESS_URL_MEDIA } from "astro:env/server";
+import { WORDPRESS_URL } from "astro:env/client";
+import { WORDPRESS_URL_MEDIA } from "astro:env/client";
 const imageFetch = async (id) => {
   return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
 };
@@ -22,7 +22,6 @@ const fondoImg = await imageFetch(dataServicios.fondo_img);
 
 <IndexLayout>
   <div
-    transition:name="matpel"
     class="w-full h-fit p-10 bg-center flex relative bg-cover"
     style=`background-image: url('${fondoImg}')`
   >
@@ -30,6 +29,7 @@ const fondoImg = await imageFetch(dataServicios.fondo_img);
     </div>
     <div
       class="flex flex-col justify-center font-primary text-2xl font-normal text-white z-30 leading-none"
+      data-aos="fade-right"
     >
       <h1 set:html={h1} class="text-3xl font-medium leading-none mb-3" /><p
         set:html={h2}
@@ -39,7 +39,9 @@ const fondoImg = await imageFetch(dataServicios.fondo_img);
   <div
     class="bg-map w-full h-fit p-10 bg-cover z-40 bg-fixed bg-center flex flex-col"
   >
-    <h2 class="subtitulo">{dataServicios.h2_servicios}</h2>
+    <h2 class="subtitulo" data-aos="fade-down">
+      {dataServicios.h2_servicios}
+    </h2>
     <div class="flex flex-wrap justify-center gap-20">
       {
         servicios.map((servicio) => {

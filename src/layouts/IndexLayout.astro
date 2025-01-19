@@ -3,7 +3,7 @@ const { title, logo } = Astro.props;
 import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
-
+import "aos/dist/aos.css";
 ---
 
 <html lang="es">
@@ -14,13 +14,26 @@ import Footer from "../components/Footer.astro";
       rel="stylesheet"
     />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title title={title}></title>
     <ClientRouter />
+    <style>
+      * {
+        overflow-x: hidden;
+      }
+    </style>
   </head>
-  <body class="relative *:font-primary">
+  <body class="relative *:font-primary bg-slate-50">
     <Navbar logo={logo} />
     <slot />
     <Footer />
+    <script>
+      import { aosInit } from "../js/aos";
+
+      // runs on initial page load
+      aosInit();
+      document.addEventListener("astro:after-swap", aosInit);
+    </script>
   </body>
 </html>

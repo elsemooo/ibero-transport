@@ -1,8 +1,8 @@
 ---
-import { WORDPRESS_URL_MEDIA } from "astro:env/server";
-import { Image } from "astro:assets";
+import { WORDPRESS_URL_MEDIA } from "astro:env/client";
 import IndexLayout from "../layouts/IndexLayout.astro";
-import { WORDPRESS_URL } from "astro:env/server";
+import { WORDPRESS_URL } from "astro:env/client";
+import SobreNosotrosChanger from "../components/SobreNosotrosChanger.astro";
 const imageFetch = async (id) => {
   return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
 };
@@ -12,6 +12,24 @@ const dataSobreNosotros = data[0].acf;
 let fondoImg = await imageFetch(dataSobreNosotros.fondo_img);
 let titulo = dataSobreNosotros.titulo;
 let subtitulo = dataSobreNosotros.sub_titulo;
+
+const sections = [
+  {
+    id: 1,
+    title: "Valores corporativos",
+    content: dataSobreNosotros.valores_corporativos_texto,
+  },
+  {
+    id: 2,
+    title: "Misión",
+    content: dataSobreNosotros.mision_texto,
+  },
+  {
+    id: 3,
+    title: "Visión",
+    content: dataSobreNosotros.vision_texto,
+  },
+];
 ---
 
 <IndexLayout
@@ -26,46 +44,82 @@ let subtitulo = dataSobreNosotros.sub_titulo;
         <h1 class="text-5xl">{titulo}</h1>
         <p class="text-xl">{subtitulo}</p>
       </div>
-      <div class="flex text-center flex-row justify-center gap-1 mt-5 self-end">
-        <div
-          class="w-2/6 h-fit py-2 text-2xl leading-none gap-2 bg-primary-claro flex flex-col items-center"
-        >
-          <img src="vision.svg" class="h-10" alt="" />
-          <p>Valores corporativos</p>
-        </div>
-        <input
-          type="checkbox"
-          id="mision"
-          class="hidden peer"
-          aria-hidden="true"
-        />
-        <label
-          class="w-2/6 cursor-pointer h-fit py-2 text-2xl leading-none gap-2 bg-primary-claro flex flex-col items-center relative"
-          for="mision"
-        >
-          <div
-            class="absolute top w-0 h-0 top-full
-        border-l-[15px] border-l-transparent
-        border-t-[15px] border-t-primary-claro
-        border-r-[15px] border-r-transparent"
-          >
-          </div>
-
-          <img src="vision.svg" class="h-10" alt="" />
-          <p><br class="sm:hidden" />Mision</p>
-        </label>
-        <div
-          class="w-2/6 h-fit py-2 text-2xl leading-none gap-2 bg-primary-claro flex flex-col items-center"
-        >
-          <img src="vision.svg" class="h-10" alt="" />
-          <p><br class="sm:hidden" />Vision</p>
+      <!-- Cuadros superiores -->
+      <div class="flex flex-col items-center">
+        <div id="buttons-container" class="flex gap-2 mt-10">
+          {
+            sections.map((section, index) => (
+              <div
+                class={`flex  flex-col items-center  text-center justify-center w-[33vw] h-24 bg-primary text-white font-semibold  transition-all cursor-pointer ${
+                  index === 0 ? "bg-primary-claro" : ""
+                }`}
+                data-id={section.id}
+              >
+                <div class="text-xl font-semibold">{section.title}</div>
+              </div>
+            ))
+          }
         </div>
       </div>
     </div>
   </div>
   <div class="bg-map px-10 pt-4 pb-10">
+    <!-- Contenido dinámico -->
+    <div
+      id="content-container"
+      class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-6"
+    >
+      <h2 id="content-title" class="text-xl font-semibold text-teal-500">
+        {sections[0].title}
+      </h2>
+      <p id="content-description" class="mt-4 text-gray-700">
+        {sections[0].content}
+      </p>
+    </div>
     <div class="flex flex-col">
       <div class="h-full w-fit rounded-lg"></div>
     </div>
   </div>
+  <script>
+    import { WORDPRESS_URL } from "astro:env/client";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const buttons = document.querySelectorAll("#buttons-container > div");
+      const title = document.getElementById("content-title");
+      const description = document.getElementById("content-description");
+      const res = await fetch(WORDPRESS_URL + "sobre-nosotros");
+      const data = await res.json();
+      const dataSobreNosotros = data[0].acf;
+      const dataText = {
+        1: {
+          title: "Valores corporativos",
+          content: dataSobreNosotros.valores_corporativos_texto,
+        },
+        2: {
+          title: "Misión",
+          content: dataSobreNosotros.mision_texto,
+        },
+        3: {
+          title: "Visión",
+          content: dataSobreNosotros.vision_texto,
+        },
+      };
+      // Agregar eventos a cada botón
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const id = button.getAttribute("data-id");
+
+          // Actualizar contenido dinámico
+          title.textContent = dataText[id].title;
+          description.textContent = dataText[id].content;
+
+          // Resetear estilos de todos los botones
+          buttons.forEach((btn) => btn.classList.remove("bg-primary-claro"));
+
+          // Agregar estilos al botón seleccionado
+          button.classList.add("bg-primary-claro");
+        });
+      });
+    });
+  </script>
 </IndexLayout>

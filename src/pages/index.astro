@@ -2,8 +2,8 @@
 import { Image } from "astro:assets";
 import IndexLayout from "../layouts/IndexLayout.astro";
 import { marked } from "marked";
-import { WORDPRESS_URL } from "astro:env/server";
-import { WORDPRESS_URL_MEDIA } from "astro:env/server";
+import { WORDPRESS_URL } from "astro:env/client";
+import { WORDPRESS_URL_MEDIA } from "astro:env/client";
 const imageFetch = async (id) => {
   return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
 };
@@ -32,14 +32,17 @@ const text2Image = await imageFetch(dataInicio.ibero_text_2_image);
       loop
       class="absolute object-cover w-full h-full z-10"
       src={fondoInicio}></video>
-    <h1
-      set:html={h1Data}
-      class="z-40 text-white font-primary relative text-5xl ml-5 lg:ml-14"
-    />
-    <div
-      class="w-fit h-fit flex bg-primary-claro ml-5 mt-5 lg:ml-14 rounded-lg text-white z-40 py-2 px-4 text-3xl cursor-pointer font-primary font-bold"
-    >
-      <a href="" class="leading-none">Cotiza con nosotros</a>
+
+    <div class="z-50" data-aos="fade-right">
+      <h1
+        set:html={h1Data}
+        class="z-40 text-white font-primary relative text-7xl ml-5 lg:ml-14"
+      />
+      <div
+        class="w-fit h-fit flex bg-primary-claro ml-5 mt-5 lg:ml-14 rounded-lg text-white z-40 py-2 px-4 text-3xl cursor-pointer font-primary font-bold"
+      >
+        <a href="" class="leading-none">Cotiza con nosotros</a>
+      </div>
     </div>
     <svg
       width="557"
@@ -48,6 +51,7 @@ const text2Image = await imageFetch(dataInicio.ibero_text_2_image);
       viewBox="0 0 557 374"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      data-aos="fade-left"
     >
       <rect
         x="181"
@@ -68,13 +72,22 @@ const text2Image = await imageFetch(dataInicio.ibero_text_2_image);
   <div
     class="w-full h-fit bg-primary relative p-14 py-20 flex flex-col items-center gap-10 lg:flex-row"
   >
-    <Image src={image2} alt="" inferSize class="w-fit lg:w-[500px]" />
+    <Image
+      src={image2}
+      alt=""
+      inferSize
+      class="w-fit lg:w-[500px] z-50 appear"
+      data-aos="fade-right"
+      data-aos-anchor-placement="center-bottom"
+    />
     <p class="text-white font-primary text-2xl lg:text-3xl font-semibold">
       {dataInicio.ibero_text_1}
     </p>
   </div>
   <div
     class="w-full h-fit antialiased text-center overflow-hidden flex flex-col justify-center relative gap-16 py-16 pb-20"
+    data-aos="fade-down"
+    data-aos-anchor-placement="center-bottom"
   >
     <p class="subtitulo">
       {dataInicio.titulo_logos}
@@ -338,18 +351,21 @@ const text2Image = await imageFetch(dataInicio.ibero_text_2_image);
   </div>
   <div
     class="w-full h-fit flex flex-col relative z-20 items-center bg-center bg-cover gap-6 p-6 bg-map mb-5"
+    data-aos="fade-up"
+    data-aos-anchor-placement="center-bottom"
   >
     <p class="subtitulo z-20">
       {dataInicio.ibero_text_2_titulo}
     </p>
     <div class="flex flex-col gap-6 items-center lg:flex-row lg:gap-14">
       <Image
-        transition:name="matpel"
         src={text2Image}
         alt=""
         inferSize
         loading="lazy"
         class="rounded-2xl rounded-bl-none"
+        data-aos="flip-left"
+        data-aos-anchor-placement="center-bottom"
       />
       <div class="flex flex-col">
         <p class="font-primary text-2xl">{dataInicio.ibero_text_2}</p>

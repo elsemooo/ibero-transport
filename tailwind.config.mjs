@@ -1,3 +1,5 @@
+import inviewplugin from "tailwind-inview";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
@@ -31,12 +33,17 @@ export default {
       },
       animation: {
         "infinite-scroll": "infinite-scroll 25s linear infinite",
-        "loop-scroll": "infinite-scroll 50s linear infinite",
+        "loop-scroll": "infinite-  50s linear infinite",
+        apear: "apear 1s linear",
       },
       keyframes: {
         "infinite-scroll": {
           from: { transform: "translateX(0)" },
           to: { transform: "translateX(-100%)" },
+        },
+        apear: {
+          from: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(0)" },
         },
       },
     },
@@ -45,6 +52,7 @@ export default {
     },
   },
   plugins: [
+    inviewplugin,
     function ({ addComponents }) {
       addComponents({
         ".subtitulo": {

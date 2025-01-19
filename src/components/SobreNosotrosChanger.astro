@@ -1,0 +1,22 @@
+---
+const { data } = Astro.props;
+
+const sections = [
+  {
+    id: 1,
+    title: "Valores corporativos",
+    content: data.valores_corporativos_texto,
+  },
+  {
+    id: 2,
+    title: "Misión",
+    content: data.mision_texto,
+  },
+  {
+    id: 3,
+    title: "Visión",
+    content: data.vision_texto,
+  },
+];
+---
+

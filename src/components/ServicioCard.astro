@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { WORDPRESS_URL_MEDIA } from "astro:env/server";
+import { WORDPRESS_URL_MEDIA } from "astro:env/client";
 
 const { data } = Astro.props;
 let { titulo, img, text, galeria, slug } = data;
@@ -12,7 +12,8 @@ img = await imageFetch(img);
 ---
 
 <div
-  class="flex flex-col h-[450px] bg-white w-fit my-5 max-w-[400px] drop-shadow-lg rounded-2xl rounded-bl-none"
+  class="flex flex-col h-fit bg-white w-fit my-5 max-w-[400px] drop-shadow-lg rounded-2xl relative"
+  data-aos="zoom-in"
 >
   <Image
     src={img}
@@ -20,19 +21,31 @@ img = await imageFetch(img);
     transition:name={`img-${slug}`}
     inferSize
     loading="eager"
-    class="rounded-2xl rounded-bl-none w-full h-auto"
+    class="rounded-2xl rounded-b-none w-auto h-[240px]"
   />
   <div
     class="p-4 text-3xl text-center font-primary flex flex-col h-full items-center"
   >
-    <p class="h-full flex items-start justify-center px-10">
+    <p
+      class="h-fit w-full top-0 py-2 flex items-start justify-center px-10 absolute text-white font-bold bg-[#0000008c] rounded-2xl rounded-bl-none"
+    >
       {titulo}
     </p>
     <a
       href=`/servicios/${slug}`
-      class="bg-primary text-white mx-3 p-1 font-primary rounded-lg max-w-72 w-3/4 mb-2"
+      class="bg-primary text-white mx-3 p-1 font-primary rounded-lg max-w-72 w-3/4 mb-2 flex flex-row justify-center items-center gap-2"
     >
       Conocer
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="#FFFFFF"
+        ><path
+          d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"
+        ></path></svg
+      >
     </a>
   </div>
 </div>

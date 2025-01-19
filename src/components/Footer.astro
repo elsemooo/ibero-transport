@@ -1,6 +1,6 @@
 ---
 import Image from "astro/components/Image.astro";
-import { WORDPRESS_URL, WORDPRESS_URL_MEDIA } from "astro:env/server";
+import { WORDPRESS_URL, WORDPRESS_URL_MEDIA } from "astro:env/client";
 const imageFetch = async (id) => {
   return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
 };

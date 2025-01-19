@@ -12,9 +12,11 @@
     "@astrojs/check": "^0.9.4",
     "@astrojs/tailwind": "^5.1.4",
     "@astrojs/ts-plugin": "^1.10.4",
+    "aos": "^2.3.4",
     "astro": "^5.1.7",
     "dotenv": "^16.4.7",
     "marked": "^15.0.5",
+    "tailwind-inview": "^1.0.14",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3"
   }
