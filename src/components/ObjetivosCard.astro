@@ -1,0 +1,27 @@
+---
+const { text, i } = Astro.props;
+
+let index = i + 1;
+let color = "";
+if (i % 2 === 0) {
+  color = "#042279";
+} else {
+  color = "#009AA2";
+}
+---
+
+<div
+  class="drop-shadow-xl mb-10 max-w-[550px] flex flex-col items-center h-fit relative pt-40"
+>
+  <div
+    class="absolute z-40 text-[200px] font-extrabold -top-1"
+    style=`color:${color} ;`
+  >
+    0{index}
+  </div>
+  <div class="bg-white p-10 h-60 flex z-50 items-center relative">
+    <p class="text-4xl font-semibold text-gray-800 text-center">
+      {text}
+    </p>
+  </div>
+</div>

@@ -2,7 +2,11 @@
 import { WORDPRESS_URL_MEDIA } from "astro:env/client";
 import IndexLayout from "../layouts/IndexLayout.astro";
 import { WORDPRESS_URL } from "astro:env/client";
-import SobreNosotrosChanger from "../components/SobreNosotrosChanger.astro";
+import Image from "astro/components/Image.astro";
+import GerenteCard from "../components/gerenteCard.astro";
+import { getDefaultFormatCodeSettings } from "typescript";
+import Certificado from "../components/Certificado.astro";
+import ObjetivosCard from "../components/ObjetivosCard.astro";
 const imageFetch = async (id) => {
   return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
 };
@@ -12,22 +16,55 @@ const dataSobreNosotros = data[0].acf;
 let fondoImg = await imageFetch(dataSobreNosotros.fondo_img);
 let titulo = dataSobreNosotros.titulo;
 let subtitulo = dataSobreNosotros.sub_titulo;
+const valores_corporativos_img = await imageFetch(
+  dataSobreNosotros.valores_corporativos_img
+);
+const mision_img = await imageFetch(dataSobreNosotros.mision_img);
+const vision_img = await imageFetch(dataSobreNosotros.vision_img);
+const historia_img = await imageFetch(dataSobreNosotros.historia_empresa_img);
+const gerente1_img = await imageFetch(dataSobreNosotros.gerente_1.foto);
+const gerente2_img = await imageFetch(dataSobreNosotros.gerente_2.foto);
+const gerente3_img = await imageFetch(dataSobreNosotros.gerente_3.foto);
 
+let trabajadores = [];
+for (const el in dataSobreNosotros.nuestros_trabajadores.galery) {
+  trabajadores.push(
+    await imageFetch(dataSobreNosotros.nuestros_trabajadores.galery[el])
+  );
+}
+let certificados = [];
+for (const el in dataSobreNosotros.certificados) {
+  certificados.push({
+    image: await imageFetch(dataSobreNosotros.certificados[el].certificado),
+    titulo: dataSobreNosotros.certificados[el].titulo,
+    descripcion: dataSobreNosotros.certificados[el].descripcion,
+  });
+}
+let objetivos = [];
+for (const el in dataSobreNosotros.objetivos.objetivos) {
+  objetivos.push({
+    text: dataSobreNosotros.objetivos.objetivos[el].text,
+    icon: dataSobreNosotros.objetivos.objetivos[el].icon,
+  });
+}
 const sections = [
   {
     id: 1,
     title: "Valores corporativos",
     content: dataSobreNosotros.valores_corporativos_texto,
+    img: valores_corporativos_img,
   },
   {
     id: 2,
     title: "Misión",
     content: dataSobreNosotros.mision_texto,
+    img: mision_img,
   },
   {
     id: 3,
     title: "Visión",
     content: dataSobreNosotros.vision_texto,
+    img: vision_img,
   },
 ];
 ---
@@ -40,18 +77,20 @@ const sections = [
     <div class="absolute top-0 left-0 w-full h-full bg-black z-20 opacity-40">
     </div>
     <div class="text-white z-40">
-      <div class="mx-10 mt-10">
+      <div class="mx-10 mt-10" data-aos="fade-right">
         <h1 class="text-5xl">{titulo}</h1>
         <p class="text-xl">{subtitulo}</p>
       </div>
       <!-- Cuadros superiores -->
-      <div class="flex flex-col items-center">
-        <div id="buttons-container" class="flex gap-2 mt-10">
+      <div class="flex flex-col items-center after:">
+        <div id="buttons-container" class="flex gap-1 mt-10">
           {
             sections.map((section, index) => (
               <div
-                class={`flex  flex-col items-center  text-center justify-center w-[33vw] h-24 bg-primary text-white font-semibold  transition-all cursor-pointer ${
-                  index === 0 ? "bg-primary-claro" : ""
+                class={`flex  flex-col items-center  text-center justify-center w-[33vw] h-24  bg-primary text-white font-semibold  transition-all cursor-pointer ${
+                  index === 0
+                    ? "bg-primary-claro after:absolute after:top-full after:h-0 after:w-0 after:border-l-[20px] after:border-r-[20px] after:border-t-[25px] after:border-l-transparent after:border-r-transparent after:border-primary-claro"
+                    : ""
                 }`}
                 data-id={section.id}
               >
@@ -63,63 +102,297 @@ const sections = [
       </div>
     </div>
   </div>
-  <div class="bg-map px-10 pt-4 pb-10">
+  <div class="px-10 pt-4 pb-10">
     <!-- Contenido dinámico -->
-    <div
-      id="content-container"
-      class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-6"
-    >
-      <h2 id="content-title" class="text-xl font-semibold text-teal-500">
-        {sections[0].title}
-      </h2>
-      <p id="content-description" class="mt-4 text-gray-700">
-        {sections[0].content}
-      </p>
-    </div>
-    <div class="flex flex-col">
-      <div class="h-full w-fit rounded-lg"></div>
+    <div class="flex flex-col lg:flex-row justify-center items-center gap-10">
+      <div
+        data-aos="fade-right"
+        id="content-container"
+        class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-10 h-fit"
+      >
+        <h2
+          id="content-title"
+          class="font-semibold text-white bg-primary-claro px-10 text-center py-2 text-3xl w-fit"
+        >
+          {sections[0].title}
+        </h2>
+        <p id="content-description" class="mt-4 text-gray-700 text-xl">
+          {sections[0].content}
+        </p>
+      </div>
+      <Image
+        data-aos="fade-left"
+        loading="eager"
+        id="content-img"
+        class="max-w-2xl max-h-80 object-cover object-center shadow-lg rounded-lg"
+        src={sections[0].img}
+        alt=""
+        inferSize
+      />
     </div>
   </div>
-  <script>
-    import { WORDPRESS_URL } from "astro:env/client";
+  <div class="px-10 pt-4 pb-10">
+    <!-- Contenido dinámico -->
+    <div class="flex flex-col lg:flex-row justify-center items-center gap-10">
+      <Image
+        loading="eager"
+        class="max-w-2xl max-h-80 object-cover object-center shadow-lg rounded-lg"
+        src={historia_img}
+        alt=""
+        inferSize
+        data-aos="fade-right"
+      />
+      <div
+        data-aos="fade-left"
+        class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-10 h-fit"
+      >
+        <h2
+          class="font-semibold text-white bg-primary-claro px-10 text-center py-2 text-3xl w-fit"
+        >
+          Historia de la empresa
+        </h2>
+        <p id="content-description" class="mt-4 text-gray-700 text-xl">
+          {dataSobreNosotros.historia_empresa_texto}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="w-full h-fit flex flex-col mb-10 text-center">
+    <p class="text-5xl p-10">Nuestro equipo</p>
+    <div
+      class="flex flex-row h-fit flex-wrap items-center justify-center gap-5 p-5"
+    >
+      <GerenteCard
+        foto={gerente1_img}
+        nombre={dataSobreNosotros.gerente_1.nombre}
+        cargo={dataSobreNosotros.gerente_1.cargo}
+      />
+      <GerenteCard
+        foto={gerente2_img}
+        nombre={dataSobreNosotros.gerente_2.nombre}
+        cargo={dataSobreNosotros.gerente_2.cargo}
+      />
+      <GerenteCard
+        foto={gerente3_img}
+        nombre={dataSobreNosotros.gerente_3.nombre}
+        cargo={dataSobreNosotros.gerente_3.cargo}
+      />
+    </div>
+    <!-- <div
+      class={`absolute top-0 left-0 w-full h-full z-10 bg-[url("http://astropress-copy.local/wp-content/uploads/2025/01/iberotranport-foto-2.png")]`}
+    > -->
+  </div>
+  <div>
+    <p class="text-center text-5xl mx-5">
+      {dataSobreNosotros.nuestros_trabajadores.titulo}
+    </p><p class="text-center text-2xl mx-5 my-5">
+      {dataSobreNosotros.nuestros_trabajadores.subtitulo}
+    </p>
+    <div class="swiper mySwiperTrabajadores mb-10">
+      <div class="swiper-wrapper">
+        {
+          trabajadores.map((el) => {
+            return (
+              <div class="swiper-slide">
+                <Image class="w-full h-auto" src={el} inferSize alt="" />
+              </div>
+            );
+          })
+        }
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+  <div class="px-0 lg:px-40 mb-10">
+    <p class="text-5xl text-center my-10">Certificados</p>
+    <div class="swiper mySwiperCertificados">
+      <div class="swiper-wrapper">
+        {
+          certificados.map((el) => {
+            return (
+              <div class="swiper-slide flex justify-center">
+                <Certificado
+                  img={el.image}
+                  titulo={el.titulo}
+                  descripcion={el.descripcion}
+                />
+              </div>
+            );
+          })
+        }
+      </div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </div>
+  <div class="my-20">
+    <p class="text-center text-5xl mt-5 mb-10">
+      {dataSobreNosotros.objetivos.titulo}
+      <div class="swiper mySwiperObjetivos">
+        <div class="swiper-wrapper">
+          {
+            objetivos.map((el, i) => {
+              return (
+                <div class="swiper-slide ">
+                  <ObjetivosCard text={el.text} i={i} />
+                </div>
+              );
+            })
+          }
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </p>
+  </div>
+</IndexLayout>
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      const buttons = document.querySelectorAll("#buttons-container > div");
-      const title = document.getElementById("content-title");
-      const description = document.getElementById("content-description");
-      const res = await fetch(WORDPRESS_URL + "sobre-nosotros");
-      const data = await res.json();
-      const dataSobreNosotros = data[0].acf;
-      const dataText = {
-        1: {
-          title: "Valores corporativos",
-          content: dataSobreNosotros.valores_corporativos_texto,
-        },
-        2: {
-          title: "Misión",
-          content: dataSobreNosotros.mision_texto,
-        },
-        3: {
-          title: "Visión",
-          content: dataSobreNosotros.vision_texto,
-        },
-      };
-      // Agregar eventos a cada botón
-      buttons.forEach((button) => {
-        button.addEventListener("click", () => {
-          const id = button.getAttribute("data-id");
+<script type="module">
+  import Swiper from "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs";
+  const swiper2 = new Swiper(".mySwiperCertificados", {
+    loop: true,
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    effect: "creative",
+    creativeEffect: {
+      prev: {
+        shadow: false,
+        translate: ["-120%", 0, -500],
+      },
+      next: {
+        shadow: false,
+        translate: ["120%", 0, -500],
+      },
+    },
+  });
+  const swiper3 = new Swiper(".mySwiperObjetivos", {
+    slidesPerView: 1,
+    loop: true,
+    autoplay: {
+      delay: 5000,
+    },
+    breakpoints: {
+      770: {
+        slidesPerView: 2,
+      },
+      1350: {
+        slidesPerView: 3,
+      },
+    },
 
-          // Actualizar contenido dinámico
-          title.textContent = dataText[id].title;
-          description.textContent = dataText[id].content;
+    pagination: {
+      el: ".swiper-pagination",
+      dynamicBullets: true,
+      clickable: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+  });
+  const swiper = new Swiper(".mySwiperTrabajadores", {
+    loop: true,
+    slidesPerView: 1,
 
-          // Resetear estilos de todos los botones
-          buttons.forEach((btn) => btn.classList.remove("bg-primary-claro"));
+    autoplay: {
+      delay: 5000,
+    },
+    breakpoints: {
+      770: {
+        slidesPerView: 2,
+      },
+      1350: {
+        slidesPerView: 3,
+      },
+    },
+    pagination: {
+      el: ".swiper-pagination",
+    },
+  });
+</script>
 
-          // Agregar estilos al botón seleccionado
-          button.classList.add("bg-primary-claro");
-        });
+<script>
+  import { WORDPRESS_URL, WORDPRESS_URL_MEDIA } from "astro:env/client";
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const buttons = document.querySelectorAll("#buttons-container > div");
+    const title = document.getElementById("content-title");
+    const imageContainer = document.getElementById("content-img");
+    const description = document.getElementById("content-description");
+    const res = await fetch(WORDPRESS_URL + "sobre-nosotros");
+    const data = await res.json();
+    const dataSobreNosotros = data[0].acf;
+    const imageFetch = async (id): Promise<string> => {
+      return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
+    };
+    const valores_corporativos_img = await imageFetch(
+      dataSobreNosotros.valores_corporativos_img
+    );
+    const mision_img_content = await imageFetch(dataSobreNosotros.mision_img);
+    const vision_img = await imageFetch(dataSobreNosotros.vision_img);
+
+    const dataText = {
+      1: {
+        title: "Valores corporativos",
+        content: dataSobreNosotros.valores_corporativos_texto,
+        img: valores_corporativos_img,
+      },
+      2: {
+        title: "Misión",
+        content: dataSobreNosotros.mision_texto,
+        img: mision_img_content,
+      },
+      3: {
+        title: "Visión",
+        content: dataSobreNosotros.vision_texto,
+        img: vision_img,
+      },
+    };
+    // Agregar eventos a cada botón
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const id = button.getAttribute("data-id");
+
+        // Actualizar contenido dinámico
+        title.textContent = dataText[id].title;
+        description.textContent = dataText[id].content;
+        (imageContainer as HTMLImageElement).src = dataText[id].img;
+
+        // Resetear estilos de todos los botones
+        buttons.forEach((btn) =>
+          btn.classList.remove(
+            "bg-primary-claro",
+            "after:absolute",
+            "after:top-full",
+            "after:h-0",
+            "after:w-0",
+            "after:border-l-[20px]",
+            "after:border-r-[20px]",
+            "after:border-t-[25px]",
+            "after:border-l-transparent",
+            "after:border-r-transparent",
+            "after:border-primary-claro"
+          )
+        );
+
+        // Agregar estilos al botón seleccionado
+        button.classList.add(
+          "bg-primary-claro",
+          "after:absolute",
+          "after:top-full",
+          "after:h-0",
+          "after:w-0",
+          "after:border-l-[20px]",
+          "after:border-r-[20px]",
+          "after:border-t-[25px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-primary-claro"
+        );
       });
     });
-  </script>
-</IndexLayout>
+  });
+</script>

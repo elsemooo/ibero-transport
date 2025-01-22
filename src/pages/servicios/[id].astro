@@ -1,7 +1,7 @@
 ---
 import type { GetStaticPaths } from "astro";
 import IndexLayout from "../../layouts/IndexLayout.astro";
-import { WORDPRESS_URL, WORDPRESS_URL_MEDIA } from "astro:env/server";
+import { WORDPRESS_URL, WORDPRESS_URL_MEDIA } from "astro:env/client";
 import Image from "astro/components/Image.astro";
 
 const imageFetch = async (id) => {
@@ -26,14 +26,10 @@ console.log(
 );
 //@ts-ignore
 let { titulo, img, text, galeria, slug } = servicio;
-let { img_1, img_2, img_3, img_4, img_5, img_6 } = galeria;
-
-img_1 = await imageFetch(img_1);
-img_2 = await imageFetch(img_2);
-img_3 = await imageFetch(img_3);
-img_4 = await imageFetch(img_4);
-img_5 = await imageFetch(img_5);
-img_6 = await imageFetch(img_6);
+let galeriaArr = [];
+for (const el in galeria) {
+  galeriaArr.push(await imageFetch(galeria[el]));
+}
 
 img = await imageFetch(img);
 ---
@@ -69,53 +65,50 @@ img = await imageFetch(img);
         />
       </div>
     </div>
-    <div class="inline-flex flex-nowrap overflow-hidden mb-10 mt-20">
-      <ul
-        x-ref="logos"
-        class="flex items-center justify-center md:justify-start [&_img]:h-56 [&_img]:w-auto md:[&_img]:h-80 lg:[&_img]:h-auto [&_img]:max-w-none animate-loop-scroll"
-      >
-        <li>
-          <Image loading="eager" src={img_1} inferSize alt="" />
-        </li>
-        <li>
-          <Image loading="eager" src={img_2} inferSize alt="" />
-        </li>
-        <li>
-          <Image loading="eager" src={img_3} inferSize alt="" />
-        </li>
-        <li>
-          <Image loading="eager" src={img_4} inferSize alt="" />
-        </li>
-        <li>
-          <Image loading="eager" src={img_5} inferSize alt="" />
-        </li>
-        <li>
-          <Image loading="eager" src={img_6} inferSize alt="" />
-        </li>
-      </ul>
-      <ul
-        x-ref="logos"
-        class="flex items-center justify-center md:justify-start [&_img]:h-56 md:[&_img]:h-80 [&_img]:w-auto lg:[&_img]:h-auto [&_img]:max-w-none animate-loop-scroll"
-      >
-        <li>
-          <Image loading="eager" src={img_1} inferSize alt="" />
-        </li>
-        <li>
-          <Image loading="eager" src={img_2} inferSize alt="" />
-        </li>
-        <li>
-          <Image loading="eager" src={img_3} inferSize alt="" />
-        </li>
-        <li>
-          <Image loading="eager" src={img_4} inferSize alt="" />
-        </li>
-        <li>
-          <Image loading="eager" src={img_5} inferSize alt="" />
-        </li>
-        <li>
-          <Image loading="eager" src={img_6} inferSize alt="" />
-        </li>
-      </ul>
+  </div>
+  <div class="swiper mb-20 mySwiperGalery2">
+    <div class="swiper-wrapper">
+      {
+        galeriaArr.map((el) => {
+          return (
+            <div class="swiper-slide">
+              <Image class="w-full" src={el} inferSize alt="" />
+            </div>
+          );
+        })
+      }
     </div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-pagination"></div>
   </div>
 </IndexLayout>
+<script type="module">
+  import Swiper from "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs";
+
+  const swiper5 = new Swiper(".mySwiperGalery2", {
+    slidesPerView: 1,
+    loop: true,
+    autoplay: {
+      delay: 5000,
+    },
+    breakpoints: {
+      770: {
+        slidesPerView: 2,
+      },
+      1350: {
+        slidesPerView: 3,
+      },
+    },
+
+    pagination: {
+      el: ".swiper-pagination",
+      dynamicBullets: true,
+      clickable: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+  });
+</script>

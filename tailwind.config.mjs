@@ -29,7 +29,7 @@ export default {
         "gradiente-suave": "linear-gradient(to bottom, #5A7BCA, #66D8DB)", // Azul claro a Azul-verde muy claro
         "gradiente-profundo": "linear-gradient(to bottom, #02194C, #007A86)", // Azul oscuro muy profundo a Azul-verde oscuro
         // imagenes
-        map: "url('BlankMap-World_gray 1.svg')",
+        map: "url('BlankMap-World_gray.svg')",
       },
       animation: {
         "infinite-scroll": "infinite-scroll 25s linear infinite",
