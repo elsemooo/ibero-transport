@@ -1,0 +1,212 @@
+---
+import Image from "astro/components/Image.astro";
+import IndexLayout from "../layouts/IndexLayout.astro";
+import { WORDPRESS_URL, WORDPRESS_URL_MEDIA } from "astro:env/client";
+const imageFetch = async (id) => {
+  return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
+};
+const res = await fetch(WORDPRESS_URL + "contacto");
+const data = (await res.json())[0].acf;
+let redes = [];
+
+for (const el in data.redes) {
+  redes.push({
+    logo: await imageFetch(data.redes[el].logo),
+    url: data.redes[el].url,
+  });
+}
+---
+
+<IndexLayout>
+  <div class="bg-white flex flex-col items-center">
+    <p class="text-5xl text-center py-10">Contáctenos</p>
+    <iframe
+      class="w-[90%] h-[400px] mb-16"
+      width="520"
+      height="400"
+      frameborder="0"
+      scrolling="no"
+      marginheight="0"
+      marginwidth="0"
+      id="gmap_canvas"
+      src="https://maps.google.com/maps?width=520&height=400&hl=en&q=TRANSPORTES%20IBEROAMERICANO%20S.R.L%20Lima+()&t=&z=12&ie=UTF8&iwloc=B&output=embed"
+    ></iframe>
+    <a href="http://maps-website.com/es">A www.maps-generator.com</a>
+    <script
+      type="text/javascript"
+      src="https://embedmaps.com/google-maps-authorization/script.js?id=ff0f8ebf619052c4d5c5dea38ef998c04d77ec19"
+    ></script>
+    <div
+      class="flex flex-row gap-10 pb-14 px-5 max-w-[1280px] w-full flex-wrap lg:flex-nowrap items-center my-10 text-xl xl:text-2xl"
+    >
+      <div>
+        <p class="text-4xl m-5 ml-0">Ubícanos</p>
+        <p
+          class="flex flex-row items-center gap-5 mb-5 flex-nowrap border-b-black border-b-4 py-4"
+        >
+          <svg
+            width="22"
+            height="32"
+            viewBox="0 0 22 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10.8216 22.8659C13.2914 20.8233 15.1562 18.8572 16.4161 16.9678C17.6759 15.0782 18.3058 13.3036 18.3058 11.6441C18.3058 9.34606 17.6072 7.45651 16.2102 5.97565C14.8132 4.49468 13.017 3.75419 10.8216 3.75419C8.62621 3.75419 6.83 4.49468 5.43299 5.97565C4.03598 7.45651 3.33742 9.34606 3.33742 11.6441C3.33742 13.3036 3.96729 15.0782 5.22714 16.9678C6.48698 18.8572 8.35188 20.8233 10.8216 22.8659ZM10.8216 26.7342C7.30409 24.0788 4.67837 21.4999 2.94454 18.9976C1.21072 16.4953 0.34375 14.0441 0.34375 11.6441C0.34375 8.45237 1.31675 5.8288 3.26263 3.77336C5.20852 1.71791 7.7281 0.690186 10.8216 0.690186C13.9151 0.690186 16.4347 1.71791 18.3807 3.77336C20.3266 5.8288 21.2995 8.45237 21.2995 11.6441C21.2995 14.0441 20.4325 16.4953 18.6987 18.9976C16.9648 21.4999 14.3391 24.0788 10.8216 26.7342ZM10.8216 14.4782C11.6449 14.4782 12.3496 14.1782 12.9359 13.5782C13.5221 12.9781 13.8153 12.2569 13.8153 11.4142C13.8153 10.5717 13.5221 9.85034 12.9359 9.25024C12.3496 8.65025 11.6449 8.3502 10.8216 8.3502C9.9984 8.3502 9.29363 8.65025 8.70731 9.25024C8.12109 9.85034 7.82793 10.5717 7.82793 11.4142C7.82793 12.2569 8.12109 12.9781 8.70731 13.5782C9.29363 14.1782 9.9984 14.4782 10.8216 14.4782ZM0.34375 31.3303V28.2662H21.2995V31.3303H0.34375Z"
+              fill="#434343"></path>
+          </svg>
+          VIA EVITAMIENTO KM 6.5 CERRO COLORADO - AREQUIPA
+        </p>
+        <p
+          class="flex flex-row items-center gap-5 mb-5 flex-nowrap border-b-black border-b-4 py-4"
+        >
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 28 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M25.7229 27.6771C22.6046 27.6771 19.5236 26.9819 16.4799 25.5903C13.4364 24.1987 10.6672 22.2254 8.17256 19.6728C5.67779 17.1191 3.75063 14.2846 2.39096 11.1694C1.0314 8.05523 0.351562 4.90098 0.351562 1.70974C0.351562 1.25002 0.501247 0.867074 0.800614 0.560674C1.09998 0.254273 1.47414 0.101074 1.92329 0.101074H7.98543C8.33465 0.101074 8.64654 0.222408 8.92097 0.464966C9.19541 0.707524 9.35751 0.99476 9.40748 1.32668L10.3804 6.68813C10.4302 7.09704 10.4178 7.44244 10.3429 7.72321C10.2681 8.00399 10.1309 8.24576 9.93131 8.45078L6.30146 12.2045C6.80048 13.1482 7.3929 14.0618 8.07894 14.942C8.76498 15.8233 9.51971 16.6723 10.3429 17.489C11.1163 18.2812 11.9271 19.0155 12.7753 19.6918C13.6235 20.3681 14.5216 20.9876 15.4696 21.5491L18.9871 17.9492C19.2117 17.7197 19.5049 17.547 19.8666 17.4322C20.2283 17.3174 20.5838 17.2851 20.933 17.3364L26.0971 18.4082C26.4464 18.5107 26.7333 18.6957 26.9578 18.9642C27.1824 19.2316 27.2946 19.5324 27.2946 19.8645V26.0683C27.2946 26.5284 27.1449 26.9117 26.8456 27.217C26.5462 27.5245 26.172 27.6771 25.7229 27.6771ZM4.87952 9.29309L7.34924 6.76501L6.71317 3.16508H3.38268C3.50744 4.21197 3.68205 5.24637 3.90652 6.26697C4.1311 7.28867 4.4554 8.29701 4.87952 9.29309ZM18.2761 23.0042C19.2491 23.4388 20.2408 23.7831 21.2511 24.0382C22.2615 24.2945 23.2781 24.4605 24.3009 24.5362V21.1658L20.7834 20.4383L18.2761 23.0042Z"
+              fill="#434343"></path>
+          </svg>
+          +51 987 654 321
+        </p>
+        <p
+          class="flex flex-row items-center gap-5 flex-nowrap border-b-black border-b-4 py-4"
+        >
+          <svg
+            width="30"
+            height="25"
+            viewBox="0 0 30 25"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.66851 24.2097C2.87023 24.2097 2.1868 23.9189 1.61833 23.3362C1.04986 22.7546 0.765625 22.0549 0.765625 21.2382V3.41124C0.765625 2.59454 1.04986 1.89484 1.61833 1.31323C2.1868 0.731627 2.87023 0.439697 3.66851 0.439697H26.8922C27.6905 0.439697 28.3739 0.731627 28.9424 1.31323C29.5109 1.89484 29.7951 2.59454 29.7951 3.41124V21.2382C29.7951 22.0549 29.5109 22.7546 28.9424 23.3362C28.3739 23.9189 27.6905 24.2097 26.8922 24.2097H3.66851ZM15.2804 13.8099L3.66851 6.38277V21.2382H26.8922V6.38277L15.2804 13.8099ZM15.2804 10.8395L26.8922 3.41124H3.66851L15.2804 10.8395ZM3.66851 6.38277V3.41124V21.2382V6.38277Z"
+              fill="#434343"></path>
+          </svg>informes@iberotransportes.com
+        </p>
+        <div>
+          <div
+            class="flex flex-row items-center gap-4 border-b-4 py-4 border-b-black my-5"
+          >
+            <a class="pointer" target="_blank" href={redes[0].url}
+              ><Image src={redes[0].logo} alt="" inferSize /></a
+            >
+            <a class="pointer" target="_blank" href={redes[1].url}
+              ><Image src={redes[1].logo} alt="" inferSize /></a
+            >
+            <a class="pointer" target="_blank" href={redes[2].url}
+              ><Image src={redes[2].logo} alt="" inferSize /></a
+            >
+            <a class="pointer" target="_blank" href={redes[3].url}
+              ><Image src={redes[3].logo} alt="" inferSize /></a
+            >
+          </div>
+        </div>
+      </div>
+      <div class="min-w-[300px] w-full max-w-[600px]">
+        <form id="form" class="flex flex-col gap-3" method="POST">
+          <p class="text-4xl mb-3">Solicite una cotización</p>
+          <input
+            class="bg-gray-200 p-3 rounded-lg"
+            type="text"
+            placeholder="NOMBRE Y APELLIDOS*"
+            name="nombre"
+          />
+
+          <input
+            class="bg-gray-200 p-3 rounded-lg"
+            type="tel"
+            placeholder="TELÉFONO*"
+            name="telefono"
+          />
+
+          <input
+            class="bg-gray-200 p-3 rounded-lg"
+            type="email"
+            placeholder="CORREO*"
+            name="correo"
+          />
+
+          <textarea
+            class="bg-gray-200 p-3 rounded-lg"
+            rows="5"
+            placeholder="MENSAJE*"
+            name="mensaje"></textarea>
+
+          <button
+            class="block w-fit bg-gray-200 px-10 py-2 rounded-lg"
+            type="submit"
+            id="submit-button"
+          >
+            Enviar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("form").addEventListener("submit", function (e) {
+      (document.getElementById("submit-button") as HTMLButtonElement).disabled =
+        true;
+      alert("gracias por completar el formulario!");
+      // Collect the form data
+      var formData = new FormData(this as HTMLFormElement);
+      var keyValuePairs = [];
+      for (var pair of formData.entries()) {
+        keyValuePairs.push(pair[0] + "=" + pair[1]);
+      }
+
+      var formDataString = keyValuePairs.join("&");
+
+      // Send a POST request to your Google Apps Script
+      fetch(
+        "https://script.google.com/macros/s/AKfycbwipASKMytKrVpCbWXahyGlgS7vPOCiHFz6aiM6hfJAx-BKa3CpUWFSTVOzCzCc2HluoQ/exec",
+        {
+          redirect: "follow",
+          method: "POST",
+          body: formDataString,
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+          },
+        }
+      )
+        .then(function (response) {
+          // Check if the request was successful
+          if (response) {
+            return response; // Assuming your script returns JSON response
+          } else {
+            throw new Error("Failed to submit the form.");
+          }
+        })
+        .then(function (data) {
+          // Display a success message
+          document.getElementById("message").textContent =
+            "Data submitted successfully!";
+          document.getElementById("message").style.display = "block";
+          document.getElementById("message").style.backgroundColor = "green";
+          document.getElementById("message").style.color = "beige";
+          (
+            document.getElementById("submit-button") as HTMLButtonElement
+          ).disabled = false;
+          (document.getElementById("form") as HTMLFormElement).reset();
+
+          setTimeout(function () {
+            document.getElementById("message").textContent = "";
+            document.getElementById("message").style.display = "none";
+          }, 2600);
+        })
+        .catch(function (error) {
+          // Handle errors, you can display an error message here
+          console.error(error);
+          document.getElementById("message").textContent =
+            "An error occurred while submitting the form.";
+          document.getElementById("message").style.display = "block";
+        });
+    });
+  </script>
+</IndexLayout>

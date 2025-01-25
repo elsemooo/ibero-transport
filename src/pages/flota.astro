@@ -1,0 +1,154 @@
+---
+import { WORDPRESS_URL } from "astro:env/client";
+import { WORDPRESS_URL_MEDIA } from "astro:env/client";
+import { marked } from "marked";
+import IndexLayout from "../layouts/IndexLayout.astro";
+import Image from "astro/components/Image.astro";
+const imageFetch = async (id) => {
+  return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
+};
+const res = await fetch(WORDPRESS_URL + "flota");
+const data = await res.json();
+const dataFlota = data[0].acf;
+const h1 = marked.parse(dataFlota.titulo);
+const h2 = marked.parse(dataFlota.sub_titulo);
+const fondoImg = await imageFetch(dataFlota.img_fondo);
+console.log(
+  "%csrc/pages/flota.astro:15 dataFlota.flota",
+  "color: #007acc;",
+  dataFlota.flota
+);
+const flota = [];
+for (const e in dataFlota.flota) {
+  let caracteristicas = dataFlota.flota[e].caracteristicas
+    .map((f) => {
+      return Object.values(f);
+    })
+    .flat();
+  flota.push({
+    nombre: dataFlota.flota[e].nombre,
+    foto: await imageFetch(dataFlota.flota[e].foto),
+    caracteristicas,
+  });
+}
+let galeria = [];
+for (const el in dataFlota.galeria) {
+  galeria.push(await imageFetch(dataFlota.galeria[el]));
+}
+const text_1_img_1 = await imageFetch(dataFlota.text_1_imagenes.imagen_1);
+const text_1_img_2 = await imageFetch(dataFlota.text_1_imagenes.imagen_2);
+const img_final = await imageFetch(dataFlota.imagen_final);
+---
+
+<IndexLayout>
+  <div
+    class="w-full h-fit p-10 bg-center flex relative bg-cover"
+    style=`background-image: url('${fondoImg}')`
+  >
+    <div class="absolute top-0 left-0 w-full h-full bg-black z-20 opacity-40">
+    </div>
+    <div
+      class="flex flex-col justify-center font-primary text-2xl font-normal text-white z-30 leading-none"
+      data-aos="fade-right"
+    >
+      <h1 set:html={h1} class="text-3xl font-medium leading-none mb-3" /><p
+        set:html={h2}
+      />
+    </div>
+  </div>
+  <p class="text-center text-5xl my-10">Nuestra Flota</p>
+  <div class="flex flex-row justify-center items center my-10">
+    <div
+      class="swiper mySwiperFlota h-fit bg-white lg:mx-20 lg:shadow-xl lg:rounded-3xl"
+    >
+      <div class="swiper-wrapper">
+        {
+          flota.map((e) => {
+            return (
+              <div class="swiper-slide my-10">
+                <div class="flex flex-row flex-wrap justify-center items-center gap-10">
+                  <Image src={e.foto} alt="" inferSize />
+                  <div class="w-80">
+                    <p class="text-4xl"> {e.nombre}</p>
+                    <ul class="list-disc text-2xl list-inside list-">
+                      {e.caracteristicas.map((x) => {
+                        return <li>{x}</li>;
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+  <div class="">
+    <p class="text-center text-5xl my-10">Galeria</p>
+    <div class="swiper mySwiperGaleriaFlota h-fit">
+      <div class="swiper-wrapper">
+        {
+          galeria.map((e) => {
+            return (
+              <div class="swiper-slide  w-fit mx-0 my-10">
+                <Image src={e} alt="" inferSize />
+              </div>
+            );
+          })
+        }
+      </div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+  <div class="flex justify-center items-center">
+    <div
+      class="max-w-[1300px] flex flex-col gap-5 bg-white shadow-xl h-fit py-14 px-16 rounded-3xl"
+    >
+      <p class="text-4xl px-5 bg-primary text-white w-fit">
+        {dataFlota.text_1_titulo}
+      </p>
+      <p class="text-2xl">
+        {dataFlota.text_1}
+      </p>
+      <div class="flex flex-row flex-wrap justify-around">
+        <Image src={text_1_img_1} alt="" inferSize />
+        <Image src={text_1_img_2} alt="" inferSize />
+      </div>
+    </div>
+  </div>
+  <div class="flex justify-center items-center p-10 bg-white mt-20">
+    <Image src={img_final} alt="" inferSize />
+  </div>
+</IndexLayout>
+<script type="module">
+  import Swiper from "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs";
+
+  var swiper = new Swiper(".mySwiperFlota", {
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    pagination: {
+      el: ".swiper-pagination",
+    },
+    keyboard: true,
+  });
+  var swiper = new Swiper(".mySwiperGaleriaFlota", {
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    loop: true,
+    slidesPerView: "auto",
+    pagination: {
+      el: ".swiper-pagination",
+    },
+    keyboard: true,
+  });
+</script>
