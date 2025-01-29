@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
+    "@astrojs/node": "^9.0.2",
     "@astrojs/tailwind": "^5.1.4",
     "@astrojs/ts-plugin": "^1.10.4",
+    "@astrojs/vercel": "^8.0.4",
     "aos": "^2.3.4",
     "astro": "^5.1.7",
     "dotenv": "^16.4.7",

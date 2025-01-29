@@ -1,0 +1,65 @@
+---
+import type { GetStaticPaths } from "astro";
+import IndexLayout from "../../../layouts/IndexLayout.astro";
+import { WORDPRESS_URL, WORDPRESS_URL_MEDIA } from "astro:env/client";
+import Image from "astro/components/Image.astro";
+
+const imageFetch = async (id) => {
+  return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
+};
+export const getStaticPaths = (async () => {
+  const res = await fetch(WORDPRESS_URL + "blog");
+  let campanas_post = [];
+
+  const imageFetch = async (id) => {
+    return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
+  };
+  const data = (await res.json())[0].acf;
+  for (const e in data.campanas_post) {
+    campanas_post.push({
+      titulo: data.blog_post[e].titulo,
+      descripcion: data.blog_post[e].descripcion,
+      imagen: await imageFetch(data.blog_post[e].imagen),
+      blog: data.blog_post[e].blog,
+      imagen_fondo: await imageFetch(data.blog_post[e].imagen_fondo),
+      slug: data.blog_post[e].slug,
+    });
+  }
+  return campanas_post.map((post) => ({
+    //@ts-ignore
+    params: { blog: post.slug },
+    props: { post },
+  }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+---
+
+<IndexLayout>
+  <div class="flex flex-col w-fit h-fit">
+    <div class="flex items-center relative w-screen h-96">
+      <Image
+        src={post.imagen_fondo}
+        alt=""
+        inferSize
+        class="w-full absolute h-full z-20 object-cover pointer-events-none object-center"
+      />
+      <h1
+        class="realtive font-semibold px-5 xl:px-10 text-white drop-shadow-strong text-5xl z-40"
+      >
+        {post.titulo}
+      </h1>
+    </div>
+    <div class="flex flex-col items-center">
+      <p class="text-lg self-start font-medium p-10">
+        blog > campañas > {post.slug}
+      </p>
+      <div class="max-w-[1000px] text-lg px-3 mb-10" set:html={post.blog} />
+    </div>
+    <a
+      href="/blog"
+      class="text-2xl font-semibold ml-20 mb-20 bg-primary text-white px-10 py-2 w-fit rounded-xl"
+      >Volver</a
+    >
+  </div>
+</IndexLayout>

@@ -1,0 +1,807 @@
+---
+import { WORDPRESS_URL_MEDIA } from "astro:env/client";
+import { WORDPRESS_URL } from "astro:env/client";
+import Image from "astro/components/Image.astro";
+import IndexLayout from "../../layouts/IndexLayout.astro";
+const imageFetch = async (id) => {
+  return (await (await fetch(WORDPRESS_URL_MEDIA + id)).json()).source_url;
+};
+const res = await fetch(WORDPRESS_URL + "blog");
+
+const data = (await res.json())[0].acf;
+const fondo_img = await imageFetch(data.fondo_img);
+
+const blog_titulo = data.blog_estructura.titulo;
+const noticias_titulo = data.noticias_estructura.titulo;
+const campañas_titulo = data.campanas_estructura.titulo;
+const blog_icon = await imageFetch(data.blog_estructura.icono);
+const noticias_icon = await imageFetch(data.noticias_estructura.icono);
+const campañas_icon = await imageFetch(data.campanas_estructura.icono);
+const blog_img = await imageFetch(data.blog_estructura.imagen_lateral);
+const noticias_img = await imageFetch(data.noticias_estructura.imagen_lateral);
+const camapñas_img = await imageFetch(data.campanas_estructura.imagen_lateral);
+let blog_post = [];
+let noticias_post = [];
+let campañas_post = [];
+for (const e in data.blog_post) {
+  blog_post.push({
+    titulo: data.blog_post[e].titulo,
+    descripcion: data.blog_post[e].descripcion,
+    imagen: await imageFetch(data.blog_post[e].imagen),
+    blog: data.blog_post[e].blog,
+    imagen_fondo: await imageFetch(data.blog_post[e].imagen_fondo),
+    slug: data.blog_post[e].slug,
+  });
+}
+for (const e in data.noticias_post) {
+  noticias_post.push({
+    titulo: data.noticias_post[e].titulo,
+    descripcion: data.noticias_post[e].descripcion,
+    imagen: await imageFetch(data.noticias_post[e].imagen),
+    blog: data.noticias_post[e].blog,
+    imagen_fondo: await imageFetch(data.noticias_post[e].imagen_fondo),
+    slug: data.noticias_post[e].slug,
+  });
+}
+for (const e in data.campanas_post) {
+  campañas_post.push({
+    titulo: data.campanas_post[e].titulo,
+    descripcion: data.campanas_post[e].descripcion,
+    imagen: await imageFetch(data.campanas_post[e].imagen),
+    blog: data.campanas_post[e].blog,
+    imagen_fondo: await imageFetch(data.campanas_post[e].imagen_fondo),
+    slug: data.campanas_post[e].slug,
+  });
+}
+blog_post = blog_post.reverse();
+noticias_post = noticias_post.reverse();
+campañas_post = campañas_post.reverse();
+const blog_post_3 = blog_post.slice(2);
+const noticias_post_3 = noticias_post.slice(2);
+const campañas_post_3 = campañas_post.slice(2);
+---
+
+<IndexLayout>
+  <div
+    class="flex relative text-white flex-col bg-center bg-cover items-center"
+    style=`background-image: url("${fondo_img}");`
+  >
+    <div class="absolute top-0 left-0 w-full h-full bg-black z-10 opacity-40">
+    </div>
+    <p id="titulo" class="w-full ml-10 my-10 z-50 text-3xl font-medium">
+      {blog_titulo}
+    </p>
+    <div class="flex w-full gap-1 h-fit justify-center flex-row z-50">
+      <input type="checkbox" id="blog" class="hidden" checked="true" />
+      <label
+        id="blog-label"
+        data-titulo={blog_titulo}
+        for="blog"
+        class="w-1/3 max-w-[300px] cursor-pointer bg-primary p-5 flex gap-3 text-xl xl:text-2xl font-medium justify-center flex-col items-center h-[120px]"
+      >
+        <Image src={blog_icon} class="w-6 xl:w-auto" alt="" inferSize />
+        <p>Blog</p>
+      </label>
+      <input type="checkbox" class="hidden" id="noticias" />
+      <label
+        id="noticias-label"
+        data-titulo={noticias_titulo}
+        for="noticias"
+        class="w-1/3 max-w-[300px] bg-primary cursor-pointer p-5 flex gap-3 text-xl xl:text-2xl font-medium justify-center flex-col items-center h-[120px]"
+      >
+        <Image src={noticias_icon} class="w-6 xl:w-auto" alt="" inferSize />
+        <p>Noticias</p>
+      </label>
+      <input type="checkbox" class="hidden" id="campañas" />
+      <label
+        id="campañas-label"
+        data-titulo={campañas_titulo}
+        for="campañas"
+        class="w-1/3 max-w-[300px] cursor-pointer bg-primary p-5 flex gap-3 text-xl xl:text-2xl font-medium justify-center flex-col items-center h-[120px]"
+      >
+        <Image src={campañas_icon} class="w-7 xl:w-auto" alt="" inferSize />
+        <p>Campañas</p>
+      </label>
+    </div>
+  </div>
+  <div id="blog-posts" class="flex flex-col justify-center">
+    <div class="flex flex-row justify-center gap-5 py-20">
+      <Image
+        src={blog_img}
+        class="w-[500px] h-[900px] hidden xl:block object-center object-cover"
+        alt=""
+        inferSize
+      />
+      <div class="flex flex-col">
+        <p
+          class="text-4xl mb-5 px-3 border-b-black border-0 border-b-2 pb-2 w-fit"
+        >
+          Blog
+        </p>
+        <a
+          href={`/blog/${blog_post[0].slug}`}
+          class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+        >
+          <Image
+            src={blog_post[0].imagen}
+            class="max-w-[219px] max-h-[204px]"
+            alt=""
+            inferSize
+          />
+          <div
+            class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3"
+          >
+            <p class="text-2xl">{blog_post[0].titulo}</p>
+            <p class="text-lg">
+              {blog_post[0].descripcion}
+            </p>
+          </div>
+        </a>
+        <a
+          href={`/blog/${blog_post[1].slug}`}
+          class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+        >
+          <Image
+            src={blog_post[1].imagen}
+            class="max-w-[219px] max-h-[204px]"
+            alt=""
+            inferSize
+          />
+          <div
+            class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3"
+          >
+            <p class="text-2xl">{blog_post[1].titulo}</p>
+            <p class="text-lg">
+              {blog_post[1].descripcion}
+            </p>
+          </div>
+        </a>
+        <a
+          href={`/blog/${blog_post[2].slug}`}
+          class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+        >
+          <Image
+            src={blog_post[2].imagen}
+            class="max-w-[219px] max-h-[204px]"
+            alt=""
+            inferSize
+          />
+          <div
+            class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3"
+          >
+            <p class="text-2xl">{blog_post[2].titulo}</p>
+            <p class="text-lg">
+              {blog_post[2].descripcion}
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+    {
+      blog_post_3.length >= 1 && (
+        <div class="flex mb-10 flex-col items-center gap-5">
+          <div
+            id="open-blog-post"
+            class="flex cursor-pointer flex-col items-center gap-2"
+          >
+            <p class="text-3xl">Ver más</p>
+            <svg
+              class="size-9"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000"
+              viewBox="240 -640 480 296"
+            >
+              <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+            </svg>
+          </div>
+          <div
+            id="close-blog-post"
+            class="hidden cursor-pointer flex-col items-center gap-2"
+          >
+            <svg
+              class="size-9"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000"
+              viewBox="240 -640 480 296"
+            >
+              <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+            </svg>
+            <p class="text-3xl">Ver menos</p>
+          </div>
+          <div
+            id="blog-post-continuacion"
+            class="hidden flex-col items-center gap-5 w-full"
+          >
+            {blog_post_3.map((e) => {
+              return (
+                <a
+                  href={`/blog/${e.slug}`}
+                  class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+                >
+                  <Image
+                    src={e.imagen}
+                    class="max-w-[219px] max-h-[204px]"
+                    alt=""
+                    inferSize
+                  />
+                  <div class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3">
+                    <p class="text-2xl">{e.titulo}</p>
+                    <p class="text-lg">{e.descripcion}</p>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+          <div
+            id="close-blog-post-bottom"
+            class="hidden cursor-pointer flex-col items-center gap-2"
+          >
+            <svg
+              class="size-9"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000"
+              viewBox="240 -640 480 296"
+            >
+              <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+            </svg>
+            <p class="text-3xl">Ver menos</p>
+          </div>
+        </div>
+      )
+    }
+  </div>
+  <div id="noticias-posts" class="hidden flex-col justify-center">
+    <div class="flex flex-row justify-center gap-5 py-20">
+      <Image
+        src={noticias_img}
+        class="w-[500px] h-[900px] hidden xl:block object-center object-cover"
+        alt=""
+        inferSize
+      />
+      <div class="flex flex-col">
+        <p
+          class="text-4xl mb-5 px-3 border-b-black border-0 border-b-2 pb-2 w-fit"
+        >
+          Noticias
+        </p>
+        <a
+          href={`/blog/noticias/${noticias_post[0].slug}`}
+          class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+        >
+          <Image
+            src={noticias_post[0].imagen}
+            class="max-w-[219px] max-h-[204px]"
+            alt=""
+            inferSize
+          />
+          <div
+            class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3"
+          >
+            <p class="text-2xl">{noticias_post[0].titulo}</p>
+            <p class="text-lg">
+              {noticias_post[0].descripcion}
+            </p>
+          </div>
+        </a>
+        <a
+          href={`/blog/noticias/${noticias_post[1].slug}`}
+          class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+        >
+          <Image
+            src={noticias_post[1].imagen}
+            class="max-w-[219px] max-h-[204px]"
+            alt=""
+            inferSize
+          />
+          <div
+            class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3"
+          >
+            <p class="text-2xl">{noticias_post[1].titulo}</p>
+            <p class="text-lg">
+              {noticias_post[1].descripcion}
+            </p>
+          </div>
+        </a>
+        <a
+          href={`/blog/noticias/${noticias_post[2].slug}`}
+          class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+        >
+          <Image
+            src={noticias_post[2].imagen}
+            class="max-w-[219px] max-h-[204px]"
+            alt=""
+            inferSize
+          />
+          <div
+            class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3"
+          >
+            <p class="text-2xl">{noticias_post[2].titulo}</p>
+            <p class="text-lg">
+              {noticias_post[2].descripcion}
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+    {
+      noticias_post_3.length >= 1 && (
+        <div class="flex mb-10 flex-col items-center gap-5">
+          <div
+            id="open-noticias-post"
+            class="flex cursor-pointer flex-col items-center gap-2"
+          >
+            <p class="text-3xl">Ver más</p>
+            <svg
+              class="size-9"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000"
+              viewBox="240 -640 480 296"
+            >
+              <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+            </svg>
+          </div>
+          <div
+            id="close-noticias-post"
+            class="hidden cursor-pointer flex-col items-center gap-2"
+          >
+            <svg
+              class="size-9"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000"
+              viewBox="240 -640 480 296"
+            >
+              <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+            </svg>
+            <p class="text-3xl">Ver menos</p>
+          </div>
+          <div
+            id="noticias-post-continuacion"
+            class="hidden flex-col items-center gap-5 w-full"
+          >
+            {noticias_post_3.map((e) => {
+              return (
+                <a
+                  href={`/blog/noticias/${e.slug}`}
+                  class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+                >
+                  <Image
+                    src={e.imagen}
+                    class="max-w-[219px] max-h-[204px]"
+                    alt=""
+                    inferSize
+                  />
+                  <div class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3">
+                    <p class="text-2xl">{e.titulo}</p>
+                    <p class="text-lg">{e.descripcion}</p>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+          <div
+            id="close-noticias-post-bottom"
+            class="hidden cursor-pointer flex-col items-center gap-2"
+          >
+            <svg
+              class="size-9"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000"
+              viewBox="240 -640 480 296"
+            >
+              <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+            </svg>
+            <p class="text-3xl">Ver menos</p>
+          </div>
+        </div>
+      )
+    }
+  </div>
+
+  <div id="campañas-posts" class="hidden flex-col justify-center">
+    <div class="flex flex-row justify-center gap-5 py-20">
+      <Image
+        src={camapñas_img}
+        class="w-[500px] h-[900px] hidden xl:block object-center object-cover"
+        alt=""
+        inferSize
+      />
+      <div class="flex flex-col">
+        <p
+          class="text-4xl px-3 mb-5 border-b-black border-0 border-b-2 pb-2 w-fit"
+        >
+          Campañas
+        </p>
+        <a
+          href={`/blog/campanas/${campañas_post[0].slug}`}
+          class="flex flex-col xl:flex-row items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+        >
+          <Image
+            src={campañas_post[0].imagen}
+            class="max-w-[219px] max-h-[204px]"
+            alt=""
+            inferSize
+          />
+          <div
+            class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3"
+          >
+            <p class="text-2xl">{campañas_post[0].titulo}</p>
+            <p class="text-lg">
+              {campañas_post[0].descripcion}
+            </p>
+          </div>
+        </a>
+        <a
+          href={`/blog/campanas/${campañas_post[1].slug}`}
+          class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+        >
+          <Image
+            src={campañas_post[1].imagen}
+            class="max-w-[219px] max-h-[204px]"
+            alt=""
+            inferSize
+          />
+          <div
+            class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3"
+          >
+            <p class="text-2xl">{campañas_post[1].titulo}</p>
+            <p class="text-lg">
+              {campañas_post[1].descripcion}
+            </p>
+          </div>
+        </a>
+        <a
+          href={`/blog/campanas/${campañas_post[2].slug}`}
+          class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+        >
+          <Image
+            src={campañas_post[2].imagen}
+            class="max-w-[219px] max-h-[204px]"
+            alt=""
+            inferSize
+          />
+          <div
+            class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3"
+          >
+            <p class="text-2xl">{campañas_post[2].titulo}</p>
+            <p class="text-lg">
+              {campañas_post[2].descripcion}
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+    {
+      campañas_post_3.length >= 1 && (
+        <div class="flex mb-10 flex-col items-center gap-5">
+          <div
+            id="open-campañas-post"
+            class="flex cursor-pointer flex-col items-center gap-2"
+          >
+            <p class="text-3xl">Ver más</p>
+            <svg
+              class="size-9"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000"
+              viewBox="240 -640 480 296"
+            >
+              <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+            </svg>
+          </div>
+          <div
+            id="close-campañas-post"
+            class="hidden cursor-pointer flex-col items-center gap-2"
+          >
+            <svg
+              class="size-9"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000"
+              viewBox="240 -640 480 296"
+            >
+              <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+            </svg>
+            <p class="text-3xl">Ver menos</p>
+          </div>
+          <div
+            id="campañas-post-continuacion"
+            class="hidden flex-col items-center gap-5 w-full"
+          >
+            {campañas_post_3.map((e) => {
+              return (
+                <a
+                  href={`/blog/campanas/${e.slug}`}
+                  class="flex xl:flex-row flex-col items-center gap-5 h-fit border-b-black border-0 border-b-2 pb-3 mb-10"
+                >
+                  <Image
+                    src={e.imagen}
+                    class="max-w-[219px] max-h-[204px]"
+                    alt=""
+                    inferSize
+                  />
+                  <div class="max-w-[450px] text-center xl:text-start px-2 flex flex-col gap-3">
+                    <p class="text-2xl">{e.titulo}</p>
+                    <p class="text-lg">{e.descripcion}</p>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+          <div
+            id="close-campañas-post-bottom"
+            class="hidden cursor-pointer flex-col items-center gap-2"
+          >
+            <svg
+              class="size-9"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000"
+              viewBox="240 -640 480 296"
+            >
+              <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+            </svg>
+            <p class="text-3xl">Ver menos</p>
+          </div>
+        </div>
+      )
+    }
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const titulo = document.getElementById("titulo");
+      const blog_button = document.getElementById("blog");
+      const blog_label = document.getElementById("blog-label");
+      const noticias_button = document.getElementById("noticias");
+      const noticias_label = document.getElementById("noticias-label");
+      const campañas_button = document.getElementById("campañas");
+      const campañas_label = document.getElementById("campañas-label");
+      const blog_posts = document.getElementById("blog-posts");
+      const noticias_posts = document.getElementById("noticias-posts");
+      const campañas_posts = document.getElementById("campañas-posts");
+      const close_blog_post_bottom = document.getElementById(
+        "close-blog-post-bottom"
+      );
+      const blog_post_continuacion = document.getElementById(
+        "blog-post-continuacion"
+      );
+      const open_blog_post = document.getElementById("open-blog-post");
+      const close_blog_post = document.getElementById("close-blog-post");
+      const close_noticias_post_bottom = document.getElementById(
+        "close-noticias-post-bottom"
+      );
+      const noticias_post_continuacion = document.getElementById(
+        "noticias-post-continuacion"
+      );
+      const open_noticias_post = document.getElementById("open-noticias-post");
+      const close_noticias_post = document.getElementById(
+        "close-noticias-post"
+      );
+      const close_campañas_post_bottom = document.getElementById(
+        "close-campañas-post-bottom"
+      );
+      const campañas_post_continuacion = document.getElementById(
+        "campañas-post-continuacion"
+      );
+      const open_campañas_post = document.getElementById("open-campañas-post");
+      const close_campañas_post = document.getElementById(
+        "close-campañas-post"
+      );
+      open_campañas_post.addEventListener("click", () => {
+        campañas_post_continuacion.classList.replace("hidden", "flex");
+        open_campañas_post.classList.add("hidden");
+        close_campañas_post.classList.replace("hidden", "flex");
+        close_campañas_post_bottom.classList.replace("hidden", "flex");
+      });
+      close_campañas_post.addEventListener("click", () => {
+        campañas_post_continuacion.classList.replace("flex", "hidden");
+        open_campañas_post.classList.remove("hidden");
+        close_campañas_post.classList.replace("flex", "hidden");
+        close_campañas_post_bottom.classList.replace("flex", "hidden");
+      });
+      close_campañas_post_bottom.addEventListener("click", () => {
+        campañas_post_continuacion.classList.replace("flex", "hidden");
+        open_campañas_post.classList.remove("hidden");
+        close_campañas_post.classList.replace("flex", "hidden");
+        close_campañas_post_bottom.classList.replace("flex", "hidden");
+      });
+      open_noticias_post.addEventListener("click", () => {
+        noticias_post_continuacion.classList.replace("hidden", "flex");
+        open_noticias_post.classList.add("hidden");
+        close_noticias_post.classList.replace("hidden", "flex");
+        close_noticias_post_bottom.classList.replace("hidden", "flex");
+      });
+      close_noticias_post.addEventListener("click", () => {
+        noticias_post_continuacion.classList.replace("flex", "hidden");
+        open_noticias_post.classList.remove("hidden");
+        close_noticias_post.classList.replace("flex", "hidden");
+        close_noticias_post_bottom.classList.replace("flex", "hidden");
+      });
+      close_noticias_post_bottom.addEventListener("click", () => {
+        noticias_post_continuacion.classList.replace("flex", "hidden");
+        open_noticias_post.classList.remove("hidden");
+        close_noticias_post.classList.replace("flex", "hidden");
+        close_noticias_post_bottom.classList.replace("flex", "hidden");
+      });
+      open_blog_post.addEventListener("click", () => {
+        blog_post_continuacion.classList.replace("hidden", "flex");
+        open_blog_post.classList.add("hidden");
+        close_blog_post.classList.replace("hidden", "flex");
+        close_blog_post_bottom.classList.replace("hidden", "flex");
+      });
+      close_blog_post.addEventListener("click", () => {
+        blog_post_continuacion.classList.replace("flex", "hidden");
+        open_blog_post.classList.remove("hidden");
+        close_blog_post.classList.replace("flex", "hidden");
+        close_blog_post_bottom.classList.replace("flex", "hidden");
+      });
+      close_blog_post_bottom.addEventListener("click", () => {
+        blog_post_continuacion.classList.replace("flex", "hidden");
+        open_blog_post.classList.remove("hidden");
+        close_blog_post.classList.replace("flex", "hidden");
+        close_blog_post_bottom.classList.replace("flex", "hidden");
+      });
+
+      const blog_titulo = blog_label.dataset.titulo;
+      const noticias_titulo = noticias_label.dataset.titulo;
+      const campañás_titulo = campañas_label.dataset.titulo;
+      blog_label.classList.add(
+        "bg-primary-claro",
+        "after:absolute",
+        "after:top-full",
+        "after:h-0",
+        "after:w-0",
+        "after:border-l-[20px]",
+        "after:border-r-[20px]",
+        "after:border-t-[25px]",
+        "after:border-l-transparent",
+        "after:border-r-transparent",
+        "after:border-primary-claro"
+      );
+      blog_button.addEventListener("click", () => {
+        (blog_button as HTMLInputElement).setAttribute("checked", "true");
+        titulo.innerText = blog_titulo;
+        noticias_button.removeAttribute("checked");
+        campañas_button.removeAttribute("checked");
+        blog_posts.classList.replace("hidden", "flex");
+        noticias_posts.classList.add("hidden");
+        campañas_posts.classList.add("hidden");
+
+        blog_label.classList.add(
+          "bg-primary-claro",
+          "after:absolute",
+          "after:top-full",
+          "after:h-0",
+          "after:w-0",
+          "after:border-l-[20px]",
+          "after:border-r-[20px]",
+          "after:border-t-[25px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-primary-claro"
+        );
+        campañas_label.classList.remove(
+          "bg-primary-claro",
+          "after:absolute",
+          "after:top-full",
+          "after:h-0",
+          "after:w-0",
+          "after:border-l-[20px]",
+          "after:border-r-[20px]",
+          "after:border-t-[25px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-primary-claro"
+        );
+        noticias_label.classList.remove(
+          "bg-primary-claro",
+          "after:absolute",
+          "after:top-full",
+          "after:h-0",
+          "after:w-0",
+          "after:border-l-[20px]",
+          "after:border-r-[20px]",
+          "after:border-t-[25px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-primary-claro"
+        );
+      });
+      noticias_button.addEventListener("click", () => {
+        (noticias_button as HTMLInputElement).setAttribute("checked", "true");
+        titulo.innerText = noticias_titulo;
+        blog_button.removeAttribute("checked");
+        campañas_button.removeAttribute("checked");
+        noticias_posts.classList.remove("hidden");
+        noticias_posts.classList.add("flex");
+        blog_posts.classList.add("hidden");
+        campañas_posts.classList.add("hidden");
+
+        noticias_label.classList.add(
+          "bg-primary-claro",
+          "after:absolute",
+          "after:top-full",
+          "after:h-0",
+          "after:w-0",
+          "after:border-l-[20px]",
+          "after:border-r-[20px]",
+          "after:border-t-[25px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-primary-claro"
+        );
+        blog_label.classList.remove(
+          "bg-primary-claro",
+          "after:absolute",
+          "after:top-full",
+          "after:h-0",
+          "after:w-0",
+          "after:border-l-[20px]",
+          "after:border-r-[20px]",
+          "after:border-t-[25px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-primary-claro"
+        );
+        campañas_label.classList.remove(
+          "bg-primary-claro",
+          "after:absolute",
+          "after:top-full",
+          "after:h-0",
+          "after:w-0",
+          "after:border-l-[20px]",
+          "after:border-r-[20px]",
+          "after:border-t-[25px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-primary-claro"
+        );
+      });
+      campañas_button.addEventListener("click", () => {
+        (campañas_button as HTMLInputElement).setAttribute("checked", "true");
+        blog_button.removeAttribute("checked");
+        noticias_button.removeAttribute("checked");
+        campañas_posts.classList.remove("hidden");
+        campañas_posts.classList.add("flex");
+        blog_posts.classList.add("hidden");
+        noticias_posts.classList.add("hidden");
+        titulo.innerText = campañás_titulo;
+        campañas_label.classList.add(
+          "bg-primary-claro",
+          "after:absolute",
+          "after:top-full",
+          "after:h-0",
+          "after:w-0",
+          "after:border-l-[20px]",
+          "after:border-r-[20px]",
+          "after:border-t-[25px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-primary-claro"
+        );
+        noticias_label.classList.remove(
+          "bg-primary-claro",
+          "after:absolute",
+          "after:top-full",
+          "after:h-0",
+          "after:w-0",
+          "after:border-l-[20px]",
+          "after:border-r-[20px]",
+          "after:border-t-[25px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-primary-claro"
+        );
+        blog_label.classList.remove(
+          "bg-primary-claro",
+          "after:absolute",
+          "after:top-full",
+          "after:h-0",
+          "after:w-0",
+          "after:border-l-[20px]",
+          "after:border-r-[20px]",
+          "after:border-t-[25px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-primary-claro"
+        );
+      });
+    });
+  </script>
+</IndexLayout>
